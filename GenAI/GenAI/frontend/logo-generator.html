@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Logo Generator — BrandCraft</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <div class="app-layout">
+        <aside class="sidebar" id="sidebar"></aside>
+        <main class="main-content">
+            <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
+            <div class="page-header fade-in">
+                <h1>🎨 AI Logo Generator</h1>
+                <p>Generate stunning logo variations powered by Stable Diffusion AI.</p>
+            </div>
+
+            <div class="two-col">
+                <div class="card fade-in">
+                    <h3 style="margin-bottom: 20px;">Logo Configuration</h3>
+                    <form id="logoForm" onsubmit="generateLogos(event)">
+                        <div class="form-group">
+                            <label for="brandName">Brand Name</label>
+                            <input type="text" id="brandName" class="form-control" placeholder="Enter brand name"
+                                required>
+                        </div>
+                        <div class="form-group">
+                            <label for="style">Logo Style</label>
+                            <select id="style" class="form-control" required>
+                                <option value="minimal">Minimal</option>
+                                <option value="modern">Modern</option>
+                                <option value="vintage">Vintage</option>
+                                <option value="tech">Tech</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Primary Color</label>
+                            <div class="color-picker-group">
+                                <input type="color" id="primaryColor" value="#6c5ce7">
+                                <span id="primaryHex"
+                                    style="color: var(--text-muted); font-size: 0.85rem;">#6c5ce7</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Secondary Color</label>
+                            <div class="color-picker-group">
+                                <input type="color" id="secondaryColor" value="#ffffff">
+                                <span id="secondaryHex"
+                                    style="color: var(--text-muted); font-size: 0.85rem;">#ffffff</span>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center;"
+                            id="generateBtn">
+                            🎨 Generate Logos
+                        </button>
+                    </form>
+                </div>
+
+                <div>
+                    <div class="spinner" id="spinner"></div>
+                    <div id="results"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!requireAuth()) return;
+            renderSidebar('logo-generator');
+
+            document.getElementById('primaryColor').addEventListener('input', (e) => {
+                document.getElementById('primaryHex').textContent = e.target.value;
+            });
+            document.getElementById('secondaryColor').addEventListener('input', (e) => {
+                document.getElementById('secondaryHex').textContent = e.target.value;
+            });
+        });
+
+        async function generateLogos(e) {
+            e.preventDefault();
+            const btn = document.getElementById('generateBtn');
+            btn.textContent = '⏳ Generating...';
+            btn.disabled = true;
+            showSpinner('spinner');
+
+            try {
+                const data = await api('/logo-generate', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        brand_name: document.getElementById('brandName').value,
+                        style: document.getElementById('style').value,
+                        primary_color: document.getElementById('primaryColor').value,
+                        secondary_color: document.getElementById('secondaryColor').value
+                    })
+                });
+
+                let html = '<h3 style="margin-bottom:16px;">Generated Logo Variations</h3><div class="logo-grid">';
+                data.logos.forEach(logo => {
+                    html += `
+                        <div class="card logo-card">
+                            <img src="${logo.url}" alt="${logo.label}" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22400%22><rect width=%22400%22 height=%22400%22 fill=%22%236c5ce7%22/><text x=%2250%25%22 y=%2250%25%22 font-size=%2260%22 fill=%22white%22 text-anchor=%22middle%22 dy=%22.3em%22 font-family=%22sans-serif%22>${data.brand_name.charAt(0)}</text></svg>'">
+                            <p>${logo.label}</p>
+                            <button class="btn btn-sm btn-secondary" onclick="downloadLogo('${logo.url}', '${logo.label}')">📥 Download PNG</button>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+                html += '<div style="margin-top:20px;"><button class="btn btn-primary" onclick="generateLogos(event)">🔄 Regenerate</button></div>';
+                document.getElementById('results').innerHTML = html;
+            } catch (err) {
+                showToast(err.message, 'error');
+            }
+
+            hideSpinner('spinner');
+            btn.textContent = '🎨 Generate Logos';
+            btn.disabled = false;
+        }
+
+        function downloadLogo(url, name) {
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = name + '.png';
+            a.target = '_blank';
+            a.click();
+            showToast('Download started!', 'success');
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard — BrandCraft</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <div class="app-layout">
+        <aside class="sidebar" id="sidebar"></aside>
+        <main class="main-content">
+            <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
+
+            <div class="dashboard-header fade-in">
+                <h1 id="welcomeMsg">Welcome back! 👋</h1>
+                <p>Here's an overview of your branding workspace.</p>
+            </div>
+
+            <!-- Stats -->
+            <div class="stats-grid fade-in">
+                <div class="card stat-card">
+                    <div class="stat-icon" style="background: rgba(108,92,231,0.12);">📁</div>
+                    <div class="stat-info">
+                        <h3 id="statProjects">0</h3>
+                        <p>Projects</p>
+                    </div>
+                </div>
+                <div class="card stat-card">
+                    <div class="stat-icon" style="background: rgba(0,184,148,0.12);">📝</div>
+                    <div class="stat-info">
+                        <h3 id="statContent">12</h3>
+                        <p>Generated Content</p>
+                    </div>
+                </div>
+                <div class="card stat-card">
+                    <div class="stat-icon" style="background: rgba(253,203,110,0.12);">📈</div>
+                    <div class="stat-info">
+                        <h3 id="statScore">--</h3>
+                        <p>Brand Strength</p>
+                    </div>
+                </div>
+                <div class="card stat-card">
+                    <div class="stat-icon" style="background: rgba(253,121,168,0.12);">🤖</div>
+                    <div class="stat-info">
+                        <h3 id="statChats">5</h3>
+                        <p>AI Consultations</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <h2 style="font-size: 1.2rem; margin-bottom: 16px;">Quick Actions</h2>
+            <div class="quick-actions fade-in">
+                <a href="brand-name.html" class="card action-card">
+                    <div class="action-icon">✨</div>
+                    <h4>Generate Brand Name</h4>
+                    <p>AI-powered names</p>
+                </a>
+                <a href="logo-generator.html" class="card action-card">
+                    <div class="action-icon">🎨</div>
+                    <h4>Create Logo</h4>
+                    <p>Multiple styles</p>
+                </a>
+                <a href="content-generator.html" class="card action-card">
+                    <div class="action-icon">📝</div>
+                    <h4>Generate Content</h4>
+                    <p>Marketing copy</p>
+                </a>
+                <a href="sentiment-analysis.html" class="card action-card">
+                    <div class="action-icon">📈</div>
+                    <h4>Analyze Sentiment</h4>
+                    <p>Brand perception</p>
+                </a>
+                <a href="assistant.html" class="card action-card">
+                    <div class="action-icon">🤖</div>
+                    <h4>Ask AI Assistant</h4>
+                    <p>Strategic advice</p>
+                </a>
+                <a href="brand-identity.html" class="card action-card">
+                    <div class="action-icon">🏗️</div>
+                    <h4>Brand Identity</h4>
+                    <p>Mission & Vision</p>
+                </a>
+            </div>
+
+            <!-- Two columns: Projects + Activity -->
+            <div class="two-col" style="margin-top: 32px;">
+                <!-- Saved Projects -->
+                <div>
+                    <h2 style="font-size: 1.2rem; margin-bottom: 16px;">Your Projects</h2>
+                    <div id="projectsList">
+                        <div class="empty-state card">
+                            <div class="empty-icon">📂</div>
+                            <p>No projects yet. Create your first brand project!</p>
+                            <button class="btn btn-primary btn-sm" style="margin-top: 16px;" onclick="createProject()">+
+                                New Project</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div>
+                    <h2 style="font-size: 1.2rem; margin-bottom: 16px;">Recent Activity</h2>
+                    <div class="card" style="padding: 0;">
+                        <div
+                            style="padding: 16px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 12px;">
+                            <span style="font-size: 1.2rem;">✨</span>
+                            <div>
+                                <div style="font-size: 0.9rem; font-weight: 500;">Generated 10 brand names</div>
+                                <div style="font-size: 0.75rem; color: var(--text-muted);">2 minutes ago</div>
+                            </div>
+                        </div>
+                        <div
+                            style="padding: 16px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 12px;">
+                            <span style="font-size: 1.2rem;">🎨</span>
+                            <div>
+                                <div style="font-size: 0.9rem; font-weight: 500;">Created 4 logo variations</div>
+                                <div style="font-size: 0.75rem; color: var(--text-muted);">15 minutes ago</div>
+                            </div>
+                        </div>
+                        <div
+                            style="padding: 16px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 12px;">
+                            <span style="font-size: 1.2rem;">📝</span>
+                            <div>
+                                <div style="font-size: 0.9rem; font-weight: 500;">Generated social media post</div>
+                                <div style="font-size: 0.75rem; color: var(--text-muted);">1 hour ago</div>
+                            </div>
+                        </div>
+                        <div style="padding: 16px; display: flex; align-items: center; gap: 12px;">
+                            <span style="font-size: 1.2rem;">📈</span>
+                            <div>
+                                <div style="font-size: 0.9rem; font-weight: 500;">Sentiment report completed</div>
+                                <div style="font-size: 0.75rem; color: var(--text-muted);">3 hours ago</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Brand Strength Score -->
+                    <div class="card" style="margin-top: 20px; text-align: center;">
+                        <h3 style="font-size: 1rem; margin-bottom: 16px;">Brand Strength Score</h3>
+                        <div class="score-circle" id="scoreCircle" data-score="78" style="--score-pct: 78%;"></div>
+                        <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 8px;">Your brand health
+                            is <strong style="color: var(--success);">Good</strong></p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (!requireAuth()) return;
+            renderSidebar('dashboard');
+
+            const user = getUser();
+            if (user) {
+                document.getElementById('welcomeMsg').textContent = `Welcome back, ${user.username}! 👋`;
+            }
+
+            // Load projects
+            try {
+                const projects = await api('/projects');
+                document.getElementById('statProjects').textContent = projects.length;
+
+                if (projects.length > 0) {
+                    const avgScore = projects.reduce((a, p) => a + p.brand_strength_score, 0) / projects.length;
+                    document.getElementById('statScore').textContent = avgScore.toFixed(1);
+
+                    let html = '';
+                    projects.forEach(p => {
+                        html += `
+                            <div class="card project-card" style="margin-bottom: 12px;">
+                                <h3 style="font-size: 1rem;">${p.name}</h3>
+                                <p class="project-meta">${p.description || 'No description'} • Score: ${p.brand_strength_score}</p>
+                                <div class="project-actions">
+                                    <a href="brand-kit.html?project=${p.id}" class="btn btn-sm btn-primary">Open</a>
+                                    <button class="btn btn-sm btn-danger" onclick="deleteProject(${p.id})">Delete</button>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    document.getElementById('projectsList').innerHTML = html;
+                }
+            } catch (e) { console.log('Projects load error:', e); }
+        });
+
+        async function createProject() {
+            const name = prompt('Enter project name:');
+            if (!name) return;
+            try {
+                await api('/projects', {
+                    method: 'POST',
+                    body: JSON.stringify({ name, description: 'New brand project' })
+                });
+                showToast('Project created!', 'success');
+                location.reload();
+            } catch (e) {
+                showToast('Failed to create project', 'error');
+            }
+        }
+
+        async function deleteProject(id) {
+            if (!confirm('Delete this project?')) return;
+            try {
+                await api(`/projects/${id}`, { method: 'DELETE' });
+                showToast('Project deleted', 'success');
+                location.reload();
+            } catch (e) { showToast('Delete failed', 'error'); }
+        }
+    </script>
+</body>
+
+</html>

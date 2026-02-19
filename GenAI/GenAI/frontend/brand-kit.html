@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brand Kit — BrandCraft</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <div class="app-layout">
+        <aside class="sidebar" id="sidebar"></aside>
+        <main class="main-content">
+            <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
+            <div class="page-header fade-in">
+                <h1>📁 Brand Kit Manager</h1>
+                <p>Manage all your brand assets — logos, names, colors, and generated content.</p>
+            </div>
+
+            <!-- Project Selector -->
+            <div class="card fade-in" style="margin-bottom: 24px;">
+                <div style="display:flex; align-items:center; gap:16px; flex-wrap:wrap;">
+                    <div class="form-group" style="margin-bottom:0; flex:1; min-width: 200px;">
+                        <label for="projectSelect">Select Project</label>
+                        <select id="projectSelect" class="form-control" onchange="loadBrandKit()">
+                            <option value="">Choose a project...</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary" onclick="createProject()" style="margin-top: 20px;">+ New
+                        Project</button>
+                    <button class="btn btn-secondary" onclick="downloadKit()" style="margin-top: 20px;">📥 Download
+                        Kit</button>
+                </div>
+            </div>
+
+            <!-- Multi-Project Workspace -->
+            <div id="projectsGrid" class="project-grid fade-in" style="margin-bottom: 32px;"></div>
+
+            <!-- Brand Kit Contents -->
+            <div id="brandKitContent" style="display:none;">
+                <div class="two-col">
+                    <!-- Assets -->
+                    <div>
+                        <h2 style="font-size:1.2rem; margin-bottom: 16px;">Brand Assets</h2>
+                        <div id="assetsList"></div>
+
+                        <div class="card" style="margin-top: 16px;">
+                            <h3 style="font-size:1rem; margin-bottom:16px;">Add Asset</h3>
+                            <div class="form-group">
+                                <label for="assetType">Asset Type</label>
+                                <select id="assetType" class="form-control">
+                                    <option value="name">Brand Name</option>
+                                    <option value="tagline">Tagline</option>
+                                    <option value="color">Brand Color</option>
+                                    <option value="logo">Logo URL</option>
+                                    <option value="mission">Mission</option>
+                                    <option value="vision">Vision</option>
+                                    <option value="values">Core Values</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="assetValue">Value</label>
+                                <textarea id="assetValue" class="form-control" rows="3"
+                                    placeholder="Enter asset value..."></textarea>
+                            </div>
+                            <button class="btn btn-success btn-sm" onclick="addAsset()">💾 Save Asset</button>
+                        </div>
+                    </div>
+
+                    <!-- Analytics -->
+                    <div>
+                        <h2 style="font-size:1.2rem; margin-bottom: 16px;">Analytics & Insights</h2>
+                        <div class="card" style="text-align:center; margin-bottom:16px;">
+                            <h3 style="font-size:1rem; margin-bottom:16px;">Brand Strength</h3>
+                            <div class="score-circle" id="kitScore" data-score="--" style="--score-pct: 0%;"></div>
+                        </div>
+
+                        <div class="card" style="margin-bottom:16px;">
+                            <h3 style="font-size:1rem; margin-bottom:12px;">📊 SWOT Analysis (AI Generated)</h3>
+                            <div style="font-size:0.9rem; line-height:1.8;">
+                                <p><strong style="color:#00b894;">Strengths:</strong> AI-driven approach, modern tech
+                                    stack, fast iteration</p>
+                                <p><strong style="color:#74b9ff;">Weaknesses:</strong> New brand awareness, limited
+                                    market presence</p>
+                                <p><strong style="color:#fdcb6e;">Opportunities:</strong> Growing AI market, startup
+                                    ecosystem</p>
+                                <p><strong style="color:#e17055;">Threats:</strong> Established competitors, rapid tech
+                                    changes</p>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <h3 style="font-size:1rem; margin-bottom:12px;">📈 Engagement Prediction</h3>
+                            <div style="font-size:0.9rem; color: var(--text-secondary);">
+                                <p>Social Media Reach: <strong style="color:var(--success);">~12,500</strong></p>
+                                <p>Email Open Rate: <strong style="color:var(--info);">28.5%</strong></p>
+                                <p>Content Engagement: <strong style="color:var(--accent-primary);">High</strong></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (!requireAuth()) return;
+            renderSidebar('brand-kit');
+            await loadProjects();
+        });
+
+        async function loadProjects() {
+            try {
+                const projects = await api('/projects');
+                const select = document.getElementById('projectSelect');
+                const grid = document.getElementById('projectsGrid');
+
+                projects.forEach(p => {
+                    select.innerHTML += `<option value="${p.id}">${p.name}</option>`;
+                });
+
+                if (projects.length > 0) {
+                    let html = '';
+                    projects.forEach(p => {
+                        html += `
+                            <div class="card project-card">
+                                <h3>${p.name}</h3>
+                                <p class="project-meta">${p.description || 'No description'} • Score: ${p.brand_strength_score}</p>
+                                <p class="project-meta">Created: ${formatDate(p.created_at)}</p>
+                                <div class="project-actions">
+                                    <button class="btn btn-sm btn-primary" onclick="selectProject(${p.id})">Open Kit</button>
+                                    <button class="btn btn-sm btn-secondary" onclick="renameProject(${p.id}, '${p.name}')">Rename</button>
+                                    <button class="btn btn-sm btn-danger" onclick="deleteProject(${p.id})">Delete</button>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    grid.innerHTML = html;
+                } else {
+                    grid.innerHTML = '<div class="empty-state card"><div class="empty-icon">📂</div><p>No projects yet. Click "+ New Project" to start!</p></div>';
+                }
+            } catch (e) { console.log(e); }
+        }
+
+        function selectProject(id) {
+            document.getElementById('projectSelect').value = id;
+            loadBrandKit();
+        }
+
+        async function loadBrandKit() {
+            const projectId = document.getElementById('projectSelect').value;
+            if (!projectId) {
+                document.getElementById('brandKitContent').style.display = 'none';
+                return;
+            }
+            document.getElementById('brandKitContent').style.display = 'block';
+
+            try {
+                const assets = await api(`/brand-kit/${projectId}`);
+                const project = await api(`/projects/${projectId}`);
+
+                // Update score
+                const score = project.brand_strength_score || 0;
+                const scoreEl = document.getElementById('kitScore');
+                scoreEl.setAttribute('data-score', score);
+                scoreEl.style.setProperty('--score-pct', `${score}%`);
+
+                let html = '';
+                if (assets.length === 0) {
+                    html = '<div class="empty-state card"><div class="empty-icon">📝</div><p>No assets yet. Add assets below or use AI tools to generate them!</p></div>';
+                } else {
+                    assets.forEach(a => {
+                        html += `
+                            <div class="card" style="margin-bottom:12px;">
+                                <div style="display:flex; justify-content:space-between; align-items:center;">
+                                    <div>
+                                        <span class="badge badge-info">${a.asset_type}</span>
+                                        <p style="margin-top:8px; font-size:0.9rem;">${a.asset_value}</p>
+                                    </div>
+                                    <button class="btn btn-sm btn-danger" onclick="deleteAsset(${a.id})">🗑️</button>
+                                </div>
+                            </div>
+                        `;
+                    });
+                }
+                document.getElementById('assetsList').innerHTML = html;
+            } catch (e) { console.log(e); }
+        }
+
+        async function addAsset() {
+            const projectId = document.getElementById('projectSelect').value;
+            if (!projectId) { showToast('Select a project first', 'error'); return; }
+
+            try {
+                await api('/brand-kit', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        project_id: parseInt(projectId),
+                        asset_type: document.getElementById('assetType').value,
+                        asset_value: document.getElementById('assetValue').value
+                    })
+                });
+                showToast('Asset saved!', 'success');
+                document.getElementById('assetValue').value = '';
+                loadBrandKit();
+            } catch (e) { showToast('Failed to save asset', 'error'); }
+        }
+
+        async function deleteAsset(id) {
+            if (!confirm('Delete this asset?')) return;
+            try {
+                await api(`/brand-kit/${id}`, { method: 'DELETE' });
+                showToast('Asset deleted', 'success');
+                loadBrandKit();
+            } catch (e) { showToast('Delete failed', 'error'); }
+        }
+
+        async function createProject() {
+            const name = prompt('Enter project name:');
+            if (!name) return;
+            try {
+                await api('/projects', { method: 'POST', body: JSON.stringify({ name, description: 'Brand project' }) });
+                showToast('Project created!', 'success');
+                location.reload();
+            } catch (e) { showToast('Failed', 'error'); }
+        }
+
+        async function renameProject(id, currentName) {
+            const name = prompt('Enter new name:', currentName);
+            if (!name || name === currentName) return;
+            try {
+                await api(`/projects/${id}`, { method: 'PUT', body: JSON.stringify({ name, description: '' }) });
+                showToast('Project renamed!', 'success');
+                location.reload();
+            } catch (e) { showToast('Rename failed', 'error'); }
+        }
+
+        async function deleteProject(id) {
+            if (!confirm('Delete this project and all its assets?')) return;
+            try {
+                await api(`/projects/${id}`, { method: 'DELETE' });
+                showToast('Project deleted', 'success');
+                location.reload();
+            } catch (e) { showToast('Delete failed', 'error'); }
+        }
+
+        function downloadKit() {
+            showToast('Brand kit download prepared! (Demo mode)', 'info');
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="BrandCraft — Build your brand in minutes with Generative AI. AI-powered brand name generation, logo creation, content marketing, and sentiment analysis.">
+    <title>BrandCraft — AI-Powered Branding Automation</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a href="index.html" class="navbar-brand">
+            <div class="logo-icon">B</div>
+            BrandCraft
+        </a>
+        <ul class="navbar-links">
+            <li><a href="#features">Features</a></li>
+            <li><a href="#how-it-works">How It Works</a></li>
+            <li><a href="#testimonials">Testimonials</a></li>
+        </ul>
+        <div class="navbar-actions">
+            <div class="theme-toggle" onclick="toggleTheme()"></div>
+            <a href="login.html" class="btn btn-secondary btn-sm">Log In</a>
+            <a href="register.html" class="btn btn-primary btn-sm">Get Started</a>
+        </div>
+        <button class="mobile-menu-btn" onclick="document.querySelector('.navbar-links').classList.toggle('show')">☰</button>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content fade-in">
+            <div class="hero-badge">
+                <span class="pulse"></span>
+                AI-Powered Branding Platform
+            </div>
+            <h1>Build Your Brand in Minutes with <span class="gradient-text">Generative AI</span></h1>
+            <p>From brand names to logos, marketing content to sentiment analysis — BrandCraft automates your entire branding journey with cutting-edge AI.</p>
+            <div class="hero-actions">
+                <a href="register.html" class="btn btn-primary btn-lg">🚀 Get Started Free</a>
+                <a href="dashboard.html" class="btn btn-secondary btn-lg">▶ Try Demo</a>
+            </div>
+
+            <!-- Workflow Steps -->
+            <div class="workflow-steps">
+                <div class="workflow-step">
+                    <div class="step-icon" style="background: rgba(108,92,231,0.15);">💡</div>
+                    <p>Name Your Brand</p>
+                </div>
+                <div class="workflow-step">
+                    <div class="step-icon" style="background: rgba(253,121,168,0.15);">🎨</div>
+                    <p>Generate Logo</p>
+                </div>
+                <div class="workflow-step">
+                    <div class="step-icon" style="background: rgba(0,184,148,0.15);">🏗️</div>
+                    <p>Build Identity</p>
+                </div>
+                <div class="workflow-step">
+                    <div class="step-icon" style="background: rgba(116,185,255,0.15);">📝</div>
+                    <p>Create Content</p>
+                </div>
+                <div class="workflow-step">
+                    <div class="step-icon" style="background: rgba(253,203,110,0.15);">📈</div>
+                    <p>Analyze & Grow</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section" id="features">
+        <div class="container">
+            <div class="section-header">
+                <h2>Everything You Need to <span class="gradient-text">Build a Brand</span></h2>
+                <p>Powered by advanced AI models, BrandCraft delivers professional branding tools at your fingertips.</p>
+            </div>
+
+            <div class="features-grid">
+                <div class="card feature-card">
+                    <div class="feature-icon" style="background: rgba(108,92,231,0.12);">✨</div>
+                    <h3>AI Brand Name Generator</h3>
+                    <p>Generate creative, market-ready brand names based on your industry, audience, and preferred tone.</p>
+                </div>
+                <div class="card feature-card">
+                    <div class="feature-icon" style="background: rgba(253,121,168,0.12);">🎨</div>
+                    <h3>AI Logo Generator</h3>
+                    <p>Create stunning logo variations in multiple styles — Minimal, Modern, Vintage, or Tech.</p>
+                </div>
+                <div class="card feature-card">
+                    <div class="feature-icon" style="background: rgba(0,184,148,0.12);">🏗️</div>
+                    <h3>Brand Identity Builder</h3>
+                    <p>Auto-generate mission, vision, values, tagline, and brand story with one click.</p>
+                </div>
+                <div class="card feature-card">
+                    <div class="feature-icon" style="background: rgba(116,185,255,0.12);">📝</div>
+                    <h3>Content Generator</h3>
+                    <p>Produce social posts, ad copy, blog articles, and email templates — all on-brand.</p>
+                </div>
+                <div class="card feature-card">
+                    <div class="feature-icon" style="background: rgba(253,203,110,0.12);">📈</div>
+                    <h3>Sentiment Analysis</h3>
+                    <p>Understand brand perception with real-time NLP analysis and actionable improvement suggestions.</p>
+                </div>
+                <div class="card feature-card">
+                    <div class="feature-icon" style="background: rgba(225,112,85,0.12);">🤖</div>
+                    <h3>AI Branding Consultant</h3>
+                    <p>Chat with your AI advisor for SWOT analysis, campaign ideas, and positioning strategy.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section id="how-it-works" style="padding: 80px 0;">
+        <div class="container">
+            <div class="section-header">
+                <h2>How It <span class="gradient-text">Works</span></h2>
+                <p>Three simple steps to a complete brand identity.</p>
+            </div>
+            <div class="features-grid" style="grid-template-columns: repeat(3, 1fr);">
+                <div class="card" style="text-align:center; padding: 40px;">
+                    <div style="font-size: 3rem; margin-bottom: 16px;">1️⃣</div>
+                    <h3>Input Your Vision</h3>
+                    <p style="color: var(--text-secondary); margin-top:8px;">Tell us about your industry, audience, and brand personality.</p>
+                </div>
+                <div class="card" style="text-align:center; padding: 40px;">
+                    <div style="font-size: 3rem; margin-bottom: 16px;">2️⃣</div>
+                    <h3>AI Generates Assets</h3>
+                    <p style="color: var(--text-secondary); margin-top:8px;">Our AI creates names, logos, identity docs, and marketing content.</p>
+                </div>
+                <div class="card" style="text-align:center; padding: 40px;">
+                    <div style="font-size: 3rem; margin-bottom: 16px;">3️⃣</div>
+                    <h3>Launch Your Brand</h3>
+                    <p style="color: var(--text-secondary); margin-top:8px;">Download your brand kit and go to market with confidence.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="testimonials-section" id="testimonials">
+        <div class="container">
+            <div class="section-header">
+                <h2>Loved by <span class="gradient-text">Entrepreneurs</span></h2>
+                <p>See what our users are saying about BrandCraft.</p>
+            </div>
+
+            <div class="testimonials-grid">
+                <div class="card testimonial-card">
+                    <div class="stars">⭐⭐⭐⭐⭐</div>
+                    <p>"BrandCraft saved us $5,000 in agency fees and delivered our brand identity in 10 minutes. The AI-generated logo is stunning!"</p>
+                    <div class="testimonial-author">
+                        <div class="avatar">SK</div>
+                        <div class="info">
+                            <strong>Sarah Kim</strong>
+                            <span>Founder, NovaTech</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card testimonial-card">
+                    <div class="stars">⭐⭐⭐⭐⭐</div>
+                    <p>"The sentiment analysis feature helped us completely pivot our messaging. Our engagement went up 300% in two weeks."</p>
+                    <div class="testimonial-author">
+                        <div class="avatar">MR</div>
+                        <div class="info">
+                            <strong>Marcus Rodriguez</strong>
+                            <span>CMO, GrowthLab</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card testimonial-card">
+                    <div class="stars">⭐⭐⭐⭐⭐</div>
+                    <p>"As a solo entrepreneur, BrandCraft is like having an entire branding agency in my pocket. Essential tool for any startup."</p>
+                    <div class="testimonial-author">
+                        <div class="avatar">AP</div>
+                        <div class="info">
+                            <strong>Aisha Patel</strong>
+                            <span>CEO, Luminary Design</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-section">
+        <div class="container">
+            <div class="cta-box">
+                <h2>Ready to Build Your Brand?</h2>
+                <p>Join 10,000+ entrepreneurs who trust BrandCraft for their branding needs.</p>
+                <a href="register.html" class="btn btn-lg">🚀 Start Free Today</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>© 2024 BrandCraft by Team MIND MATRIX. All rights reserved. Built with ❤️ and AI.</p>
+        </div>
+    </footer>
+
+    <script src="js/app.js"></script>
+</body>
+</html>

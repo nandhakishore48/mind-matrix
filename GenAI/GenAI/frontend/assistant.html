@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Branding Assistant — BrandCraft</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <div class="app-layout">
+        <aside class="sidebar" id="sidebar"></aside>
+        <main class="main-content" style="padding: 0; display: flex; flex-direction: column; height: 100vh;">
+            <div
+                style="padding: 20px 32px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 12px;">
+                <button class="mobile-menu-btn" onclick="toggleSidebar()" style="margin:0;">☰</button>
+                <div>
+                    <h1 style="font-size: 1.2rem; margin: 0;">🤖 AI Branding Consultant</h1>
+                    <p style="font-size: 0.8rem; color: var(--text-muted); margin:0;">Get strategic branding advice,
+                        SWOT analysis, and campaign ideas</p>
+                </div>
+                <div style="margin-left:auto;">
+                    <span class="badge badge-success">● Online</span>
+                </div>
+            </div>
+
+            <div class="chat-messages" id="chatMessages">
+                <div class="chat-message assistant">
+                    <strong>AI Branding Consultant</strong><br><br>
+                    👋 Hello! I'm your AI Branding Consultant. I can help you with:
+                    <br><br>
+                    • <strong>Market Positioning</strong> — Where to position your brand<br>
+                    • <strong>Campaign Ideas</strong> — Marketing campaign strategies<br>
+                    • <strong>SWOT Analysis</strong> — Strengths, weaknesses, opportunities, threats<br>
+                    • <strong>Brand Improvement</strong> — Tips to strengthen your brand<br>
+                    <br>
+                    Try asking: <em>"Give me a SWOT analysis"</em> or <em>"Suggest marketing campaigns"</em>
+                </div>
+            </div>
+
+            <!-- Quick Suggestions -->
+            <div style="padding: 8px 20px; display:flex; gap:8px; flex-wrap:wrap;" id="quickSuggestions">
+                <button class="btn btn-sm btn-secondary" onclick="sendQuick('Give me a SWOT analysis for my brand')">📊
+                    SWOT Analysis</button>
+                <button class="btn btn-sm btn-secondary" onclick="sendQuick('Suggest marketing campaign ideas')">🎯
+                    Campaign Ideas</button>
+                <button class="btn btn-sm btn-secondary"
+                    onclick="sendQuick('How should I position my brand in the market?')">📍 Market Positioning</button>
+                <button class="btn btn-sm btn-secondary" onclick="sendQuick('How can I improve my brand?')">💡 Brand
+                    Tips</button>
+            </div>
+
+            <div class="chat-input-area">
+                <input type="text" id="chatInput" class="form-control" placeholder="Ask your branding question..."
+                    onkeydown="if(event.key==='Enter')sendMessage()">
+                <button class="btn btn-primary" onclick="sendMessage()">Send</button>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!requireAuth()) return;
+            renderSidebar('assistant');
+        });
+
+        function sendQuick(msg) {
+            document.getElementById('chatInput').value = msg;
+            sendMessage();
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            if (!message) return;
+
+            // Add user message
+            addMessage(message, 'user');
+            input.value = '';
+
+            // Show typing indicator
+            const typingId = addMessage('Thinking...', 'assistant');
+
+            try {
+                const data = await api('/chat', {
+                    method: 'POST',
+                    body: JSON.stringify({ message, context: '' })
+                });
+
+                // Replace typing with response
+                const typingEl = document.getElementById(typingId);
+                if (typingEl) {
+                    typingEl.innerHTML = renderMarkdown(data.response);
+                }
+
+                // Show suggestion buttons if available
+                if (data.suggestions && data.suggestions.length > 0) {
+                    const suggestionsEl = document.getElementById('quickSuggestions');
+                    suggestionsEl.innerHTML = data.suggestions.map(s =>
+                        `<button class="btn btn-sm btn-secondary" onclick="sendQuick('${s.replace(/'/g, "\\'")}')">${s}</button>`
+                    ).join('');
+                }
+            } catch (err) {
+                const typingEl = document.getElementById(typingId);
+                if (typingEl) {
+                    typingEl.innerHTML = 'Sorry, something went wrong. Please try again.';
+                }
+            }
+        }
+
+        let msgCounter = 0;
+        function addMessage(text, role) {
+            const messages = document.getElementById('chatMessages');
+            const div = document.createElement('div');
+            const id = `msg-${++msgCounter}`;
+            div.id = id;
+            div.className = `chat-message ${role}`;
+            div.innerHTML = role === 'user' ? text : renderMarkdown(text);
+            messages.appendChild(div);
+            messages.scrollTop = messages.scrollHeight;
+            return id;
+        }
+    </script>
+</body>
+
+</html>

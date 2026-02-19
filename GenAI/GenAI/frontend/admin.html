@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel — BrandCraft</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <div class="app-layout">
+        <aside class="sidebar" id="sidebar"></aside>
+        <main class="main-content">
+            <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
+            <div class="page-header fade-in">
+                <h1>⚙️ Admin Panel</h1>
+                <p>Monitor users, system analytics, API usage, and content logs.</p>
+            </div>
+
+            <!-- Stats -->
+            <div class="admin-stats fade-in" id="adminStats">
+                <div class="card admin-stat">
+                    <div class="stat-number gradient-text" id="totalUsers">0</div>
+                    <div class="stat-label">Total Users</div>
+                </div>
+                <div class="card admin-stat">
+                    <div class="stat-number" style="color: var(--success);" id="totalProjects">0</div>
+                    <div class="stat-label">Total Projects</div>
+                </div>
+                <div class="card admin-stat">
+                    <div class="stat-number" style="color: var(--info);" id="totalContent">0</div>
+                    <div class="stat-label">Generated Content</div>
+                </div>
+                <div class="card admin-stat">
+                    <div class="stat-number" style="color: var(--warning);" id="totalSentiment">0</div>
+                    <div class="stat-label">Sentiment Reports</div>
+                </div>
+                <div class="card admin-stat">
+                    <div class="stat-number" style="color: var(--accent-primary);" id="totalChats">0</div>
+                    <div class="stat-label">Chat Messages</div>
+                </div>
+                <div class="card admin-stat">
+                    <div class="stat-number" style="color: var(--danger);" id="apiCalls">0</div>
+                    <div class="stat-label">API Calls Today</div>
+                </div>
+            </div>
+
+            <div class="two-col" style="margin-top:8px;">
+                <!-- User Management -->
+                <div>
+                    <h2 style="font-size:1.2rem; margin-bottom:16px;">👥 User Management</h2>
+                    <div class="card" style="padding:0; overflow-x:auto;">
+                        <table class="data-table" id="usersTable">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Username</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Logs -->
+                <div>
+                    <h2 style="font-size:1.2rem; margin-bottom:16px;">📋 System Logs</h2>
+                    <div class="card" style="max-height:400px; overflow-y:auto;" id="logsContainer">
+                        <div class="empty-state">
+                            <p>Loading logs...</p>
+                        </div>
+                    </div>
+
+                    <!-- Quick Chart -->
+                    <div class="card" style="margin-top:16px;">
+                        <h3 style="font-size:1rem; margin-bottom:16px;">📊 Usage Analytics</h3>
+                        <div class="bar-chart" style="margin-bottom:40px;" id="usageChart">
+                            <div class="bar" style="height:120px; background: var(--accent-gradient);">
+                                <div class="bar-value">42</div>
+                                <div class="bar-label">Mon</div>
+                            </div>
+                            <div class="bar" style="height:90px; background: var(--accent-gradient);">
+                                <div class="bar-value">31</div>
+                                <div class="bar-label">Tue</div>
+                            </div>
+                            <div class="bar" style="height:150px; background: var(--accent-gradient);">
+                                <div class="bar-value">56</div>
+                                <div class="bar-label">Wed</div>
+                            </div>
+                            <div class="bar" style="height:110px; background: var(--accent-gradient);">
+                                <div class="bar-value">38</div>
+                                <div class="bar-label">Thu</div>
+                            </div>
+                            <div class="bar" style="height:170px; background: var(--accent-gradient);">
+                                <div class="bar-value">64</div>
+                                <div class="bar-label">Fri</div>
+                            </div>
+                            <div class="bar" style="height:80px; background: var(--accent-gradient);">
+                                <div class="bar-value">28</div>
+                                <div class="bar-label">Sat</div>
+                            </div>
+                            <div class="bar" style="height:60px; background: var(--accent-gradient);">
+                                <div class="bar-value">19</div>
+                                <div class="bar-label">Sun</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (!requireAuth()) return;
+            renderSidebar('admin');
+
+            // Load stats
+            try {
+                const stats = await api('/admin/stats');
+                document.getElementById('totalUsers').textContent = stats.total_users;
+                document.getElementById('totalProjects').textContent = stats.total_projects;
+                document.getElementById('totalContent').textContent = stats.total_generated_content;
+                document.getElementById('totalSentiment').textContent = stats.total_sentiment_reports;
+                document.getElementById('totalChats').textContent = stats.total_chat_messages;
+                document.getElementById('apiCalls').textContent = stats.api_calls_today;
+            } catch (e) {
+                console.log('Stats error:', e);
+            }
+
+            // Load users
+            try {
+                const users = await api('/admin/users');
+                const tbody = document.getElementById('usersBody');
+                tbody.innerHTML = users.map(u => `
+                    <tr>
+                        <td>${u.id}</td>
+                        <td><strong>${u.username}</strong></td>
+                        <td>${u.email}</td>
+                        <td><span class="badge ${u.role === 'admin' ? 'badge-info' : 'badge-success'}">${u.role}</span></td>
+                        <td><span class="badge ${u.is_active ? 'badge-success' : 'badge-danger'}">${u.is_active ? 'Active' : 'Suspended'}</span></td>
+                        <td>
+                            <div style="display:flex; gap:4px;">
+                                <button class="btn btn-sm btn-secondary" onclick="toggleUser(${u.id})" ${u.role === 'admin' ? 'disabled' : ''}>
+                                    ${u.is_active ? '⏸️' : '▶️'}
+                                </button>
+                                <button class="btn btn-sm btn-danger" onclick="deleteUser(${u.id})" ${u.role === 'admin' ? 'disabled' : ''}>
+                                    🗑️
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (e) {
+                document.getElementById('usersBody').innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text-muted);">Access denied or error loading users</td></tr>';
+            }
+
+            // Load logs
+            try {
+                const logs = await api('/admin/logs');
+                const container = document.getElementById('logsContainer');
+                if (logs.length === 0) {
+                    container.innerHTML = '<div class="empty-state"><p>No logs yet.</p></div>';
+                } else {
+                    container.innerHTML = logs.map(l => `
+                        <div style="padding:12px; border-bottom: 1px solid var(--border-color); display:flex; justify-content:space-between; font-size:0.85rem;">
+                            <div>
+                                <span class="badge badge-info" style="margin-right:8px;">${l.action}</span>
+                                ${l.details}
+                            </div>
+                            <div style="color:var(--text-muted); white-space:nowrap;">${l.created_at ? formatDate(l.created_at) : ''}</div>
+                        </div>
+                    `).join('');
+                }
+            } catch (e) {
+                document.getElementById('logsContainer').innerHTML = '<div class="empty-state"><p>Unable to load logs.</p></div>';
+            }
+        });
+
+        async function toggleUser(id) {
+            try {
+                const result = await api(`/admin/users/${id}/suspend`, { method: 'PUT' });
+                showToast(result.message, 'success');
+                location.reload();
+            } catch (e) { showToast('Action failed', 'error'); }
+        }
+
+        async function deleteUser(id) {
+            if (!confirm('Delete this user permanently?')) return;
+            try {
+                await api(`/admin/users/${id}`, { method: 'DELETE' });
+                showToast('User deleted', 'success');
+                location.reload();
+            } catch (e) { showToast(e.message, 'error'); }
+        }
+    </script>
+</body>
+
+</html>
